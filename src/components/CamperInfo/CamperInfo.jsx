@@ -1,61 +1,43 @@
-import css from "./CategoriesList.module.css";
+import { useSelector } from "react-redux";
+import { selectCamperWithId } from "../../redux/campers/camperSelectors";
+import css from "./CamperInfo.module.css";
+import { Link } from "react-router-dom";
 
-export default function CategoriesList({ camper }) {
-  const { transmission, engine, kitchen, AC, radio, TV, bathroom } = camper;
+export default function CamperInfo() {
+  const camper = useSelector(selectCamperWithId);
+  const { name, price, rating, location, gallery, description } = camper;
+  const formattedPrice = `${price},00`;
+  const countReviews = camper.reviews.length;
   return (
-    <ul className={css.categories}>
-      <li>
-        <svg className={css.icon} width={20} height={20}>
-          <use href="/sprite.svg#icon-diagram"></use>
-        </svg>
-        {transmission}
-      </li>
-      <li>
-        <svg className={css.icon} width={20} height={20}>
-          <use href="/sprite.svg#icon-fuel-pump"></use>
-        </svg>
-        {engine}
-      </li>
-      {kitchen && (
-        <li>
-          <svg className={css.icon} width={20} height={20}>
-            <use href="/sprite.svg#icon-cup"></use>
+    <div>
+      <h1 className={css.title}>{name}</h1>
+      <div className={css.ratingWrap}>
+        <Link to="/catalog/:id/reviews" className={css.rating}>
+          <svg className={css.icon} width={16} height={16}>
+            <use href="/sprite.svg#icon-star-yellow"></use>
           </svg>
-          kitchen
-        </li>
-      )}
-      {AC && (
-        <li>
-          <svg className={css.icon} width={20} height={20}>
-            <use href="/sprite.svg#icon-wind"></use>
+          {rating}
+          <span>({countReviews} reviews)</span>
+        </Link>
+        <p>
+          <svg className={css.icon} width={16} height={16}>
+            <use href="/sprite.svg#icon-map"></use>
           </svg>
-          AC
-        </li>
-      )}
-      {radio && (
-        <li>
-          <svg className={css.icon} width={20} height={20}>
-            <use href="/sprite.svg#icon-radios"></use>
-          </svg>
-          radio
-        </li>
-      )}
-      {TV && (
-        <li>
-          <svg className={css.icon} width={20} height={20}>
-            <use href="/sprite.svg#icon-tv"></use>
-          </svg>
-          TV
-        </li>
-      )}
-      {bathroom && (
-        <li>
-          <svg className={css.icon} width={20} height={20}>
-            <use href="/sprite.svg#icon-drop"></use>
-          </svg>
-          bathroom
-        </li>
-      )}
-    </ul>
+          {location}
+        </p>
+      </div>
+      <p className={css.price}>
+        <span>&#8364;</span>
+        {formattedPrice}
+      </p>
+      <ul className={css.imgList}>
+        {gallery.map((img, index) => (
+          <li className={css.imgItem} key={index}>
+            <img src={img.thumb} alt={name} />
+          </li>
+        ))}
+      </ul>
+      <p className={css.descr}>{description}</p>
+    </div>
   );
 }
